@@ -17,6 +17,7 @@
  * @module @shizhanyu13/waom-mcp
  */
 
+import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
@@ -35,7 +36,13 @@ import {
   type WaomMonitor,
 } from './waom.js'
 
-const VERSION = '0.1.0'
+// Version is sourced from package.json so a release never needs to update this
+// in two places. `../package.json` resolves to the package root both during
+// build (src/) and at runtime (lib/), since this file lives one dir deep.
+const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as {
+  version: string
+}
+const VERSION = pkg.version
 
 /** Render any result so a host agent can read it without guessing. */
 function toText(label: string, data: unknown): string {

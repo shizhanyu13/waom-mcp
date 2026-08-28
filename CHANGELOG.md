@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Consider adding a `timeoutMs` override to `monitor`/`verify` (currently fixed at 5s).
 - Consider a bundled `.claude/agents/waom-operator` subagent + `.claude/skills/` doc so a Claude Code host can drive the 4-tool loop in one shot.
 
+## [0.1.1] - 2026-08-24
+
+### Changed
+- Version is now read from `package.json` at runtime instead of a hard-coded constant, so a release never has to update two places.
+
+### Fixed
+- 0.1.0 was published via a one-time manual token (required for the "package must already exist before OIDC" bootstrap). 0.1.1 re-publishes through the npm **OIDC trusted publisher** so the package carries `GitHub Actions published` sigstore provenance and future releases are fully automated.
+
 ## [0.1.0] - 2026-08-28
 
 ### Added
