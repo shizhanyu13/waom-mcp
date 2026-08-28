@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "waom": {
+      "command": "npx",
+      "args": ["-y", "@shizhanyu13/waom-mcp"],
+      "type": "stdio"
+    }
+  }
+}
