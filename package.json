@@ -1,0 +1,63 @@
+{
+  "name": "@shizhanyu13/waom-mcp",
+  "description": "Cross-platform MCP server exposing the Ironbound WAOM autonomous-ops loop (monitor / decide / fix / verify) as four tools, for Claude Code, Codex, and Cursor. Ports the pure probe/decide/evaluate/fix-prompt logic from @shizhanyu13/dsh-waom; the host agent is the executor.",
+  "keywords": [
+    "waom",
+    "mcp",
+    "model-context-protocol",
+    "claude-code",
+    "codex",
+    "cursor",
+    "autonomous-ops",
+    "monitor",
+    "self-healing",
+    "autonomous",
+    "subagent",
+    "oop"
+  ],
+  "version": "0.1.0",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "bin": {
+    "waom-mcp": "lib/index.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "README.md"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shizhanyu13/waom-mcp.git"
+  },
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}

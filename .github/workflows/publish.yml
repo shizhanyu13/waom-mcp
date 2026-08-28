@@ -1,0 +1,48 @@
+name: Publish Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  id-token: write  # Required for OIDC trusted publishing
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false  # never use caching in release builds
+      # OIDC trusted publishing requires npm CLI >= 11.5.1; the runner-bundled
+      # npm may be older, so force a known OIDC-capable 11.x line.
+      - name: Upgrade npm for OIDC
+        run: npm install -g npm@11 --no-fund --no-audit
+      - run: npm install --legacy-peer-deps
+      # waom-mcp is fully buildable (no vendored monorepo source), so the CI
+      # gate is stronger than the dsh-* release carriers: run the real tests AND
+      # build the lib bundle before publishing.
+      - run: npm test
+      - run: npm run build
+      - name: Check package.json version matches CHANGELOG
+        run: |
+          VER="$(node -p "require('./package.json').version")"
+          grep -q "^## \[${VER}\]" CHANGELOG.md || { echo "CHANGELOG.md is missing an entry for v${VER}"; exit 1; }
+      # Idempotent publish: if the version is already on the registry (e.g. when
+      # re-tagging after a release), skip instead of failing with E403.
+      - name: Publish package (skip if version already on npm)
+        run: |
+          PKG="$(node -p "require('./package.json').name")"
+          VER="$(node -p "require('./package.json').version")"
+          echo "Publishing ${PKG}@${VER}"
+          if npm view "${PKG}@${VER}" version >/dev/null 2>&1; then
+            echo "Version ${VER} already published — skipping."
+            exit 0
+          fi
+          npm publish --access public
